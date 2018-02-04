@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import struct
 from mpl_toolkits.basemap import Basemap
 import numpy as np
+import os
 
 class RadarData:
     from datetime import datetime as dt
@@ -77,11 +78,12 @@ class RadarData:
 
                 counter += 1
 
-        # self.data = self.np.flipud(self.data)
+        os.remove(FILE)
 
 if __name__ == "__main__":
     Radar = RadarData()
 
+    hamburg_coords = (53.551086, 9.993682)
     fig, ax1 = plt.subplots(nrows=1,ncols=1,figsize=(9,9))
     m = Basemap(llcrnrlon=4,llcrnrlat=46,urcrnrlon=16,urcrnrlat=56, epsg=31467)
     m.arcgisimage(service='ESRI_Imagery_World_2D', xpixels=1000, verbose=True)
@@ -94,4 +96,8 @@ if __name__ == "__main__":
     img = m.contourf(x=X,
                      y=Y,
                      data=Radar.data.transpose(),cmap="jet")
+
+    hamburg_x,hamburg_y = m(hamburg_coords[0],hamburg_coords[1])
+    m.scatter(x=hamburg_x,y=hamburg_y, marker="o", markersize=2000, markerfacecolor="black",zorder=100)
     # plt.colorbar(img,cax=m)
+    plt.savefig("Lates.png")
